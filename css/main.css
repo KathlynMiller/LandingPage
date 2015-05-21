@@ -1,0 +1,16 @@
+body {
+
+   background:url("");
+
+   background-size: cover;
+
+}     
+
+@media screen and (min-width:1024px) {    /* media query min width on for ipad is 1024px*/
+	html{ background-color: purple; }     /*background color for ipad is purple */
+}
+
+@media screen and (max-width:320px) {    /* media query max width on iphone 5 is 320px*/
+	html{ background-color: red; }       /*background color for ipad is red */
+}
+	
