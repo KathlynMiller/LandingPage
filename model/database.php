@@ -1,51 +1,94 @@
 <?php
-class database { /* we need functions in our class that store in variables*/
-	private $connection; /* these private variables are only to be access on this file*/
-    private $host;   /* no other files can access this class*/
-    private $username; /* these are member,instant,gobal variables*/
-    private $password; /*a class is made with a new instance of an object that will be created and its name must be used when doing this*/
-    private $database;
-    public $error;
-    public function __construct($host, $username, $password, $database) { /* the constructor is cotaining 4 variable from the database class*/
-      $this->host = $host;         /*they all are storing their own gobal variables*/
-      $this->username = $username;
-      $this->password = $password;
-      $this->database = $database;
+
+// make code easier to read and to maintain
+class Database {
+
+	// create instanace variables 
+	// private means that these variables can only  
+	// be used or access in this class; cannot be access anywhere else
+	// these variables are hidden; no one can modify them.
+	// global variable which stay within the object
+	private $connection;
+	private $host;
+	private $username;
+	private $password;
+	private $database;
+	public $error;
+
+	// constructor has four local variables or parameter
+	// constructor function uses to create object
+	public function __construct($host, $username, $password, $database) {
+		$this->host = $host;
+		$this->username = $username;
+		$this->password = $password;
+		$this->database = $database;
+
     $this->connection = new mysqli($host, $username, $password);
-    
-    if($this->connection->connect_error) {
-      die("<p>Error: " . $this->connection->connect_error . "</p>");
-    }
-    $exists = $this->connection->select_db($database); /* exists variable equals connection variable to select_db(database) */
-    if(!$exists) {
-   	    $query = $this->connection->query("CREATE DATABASE $database");
-   	if($query) {
-         echo "<p>successfully created database: " . $database ."</p>";   
-   	    }
+
+    if($this->connection->connect_error){
+       die("<p>Error: " . $this->connection->connect_error . "</p>"); 
+        }
    
+    $exists = $this->connection->select_db($database);
+    
+    if (!$exists) {
+        // create a database query
+         $query = $this->connection->query("CREATE DATABASE $database");
+        
+        if ($query){
+          echo "<p>Successfully created database: " . $database . "</p>";
+          }
+       }
+
+     else {
+         echo "<p>Database already exists</p>";
      }
-    else {
-    	echo "<p>Database already exists.</p>"; /*paragraph tags in echo */
-     }
-    }
-    public function openConnection() {  /*this function is for opening our connection */
-        $this->connection = new mysqli($this->host, $this->username, $this->password, $this->database); /*copied from create-db.php file and contains a connection with its mysqli with variables from database class*/
-        if($this->connection->connect_error) {
-           die("<p>Error: " . $this->connection->connect_error . "</p>"); /*paragraphing my connection*/
-        }
-    }
-    public function closeConnection() { /*this function is for closing our connection*/
-    	if(isset($this->connection)) {       /*isset is checking the variable or it will turn null*/
-    		$this->connection->close();    /*isset is checking $this->connection information*/
-    	}
-    }
-    public function query($string) {   /*query function contains a string variable*/
-    	$this->openConnection(); /*opening my connection*/
-    	$query = $this->connection->query($string); /*query variable stores a connection containing a query with a string variable */
-    	if(!$query) {     /*checking whether or not my query is true*/
-    	 $this->error = $this->connection->error;
-    	}
-    	$this->closeConnection();    /*closing connection in query function*/
-    	return $query;   /*returning my query */
-        }
-    }
+     
+	}
+
+
+	// this function will open the connection
+	public function openConnection() {
+		$this->connection = new mysqli($this->host, $this->username, $this->password, $this->database);	
+		
+		if($this->connection->connect_error){
+      		 die("<p>Error: " . $this->connection->connect_error . "</p>"); 
+      	  }	
+
+	}
+
+	// this function will close the connection w/o passing any parameter
+	public function closeConnection() {
+		// check to see if the information is present or available
+		 if(isset($this->connection)) {
+		 	  $this->connection->close();
+		 }
+
+	}
+
+	// call query function by passing a string
+	public function query($string) {
+		// call the open connection function
+		  $this->openConnection();
+
+		  // store string in the query variable
+		  $query = $this->connection->query($string);
+
+
+		  // check to see if query is false; if it is then execute the code
+		  if (!$query) {
+		  		$this->error = $this->connection->error;
+
+		  }
+
+		  // call the close connection function
+		  $this->closeConnection();
+
+		  return $query;
+		  
+	}
+
+	//public function time() {
+			//return $this->connection->format("m-d-Y");
+  //}
+}
